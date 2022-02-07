@@ -1,0 +1,52 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int mod=1e9+7;
+const int N=1000100;
+long long val[N],ji[N],fa[N],vis[N];
+int find(int x){
+    return fa[x]==x?x:fa[x]=find(fa[x]);
+}
+int Pow(int a,int m){
+    int ans=1;
+    while(m){
+        if(m&1)ans=1ll*ans*a%mod;
+        a=(1ll*a*a)%mod;
+        m>>=1ll;
+    }
+    return ans;
+}
+int main(){
+    int n,m;
+    cin>>n>>m;
+    for(int i=1;i<=n;i++)fa[i]=i;
+    string s;
+    cin>>s;
+    for(int i=1;i<=n;i++)cin>>val[i];
+    ji[1]=val[1];
+    for(int i=0;i<n-1;i++){
+        if(s[i]=='+'){
+            ji[i+2]=val[i+2];
+        }
+        else {
+            int x=find(i+1);
+            ji[x]=(ji[x]*val[i+2])%mod;
+            fa[i+2]=x;
+        }
+    }
+    long long sum=0;
+    for(int i=1;i<=n;i++)if(!vis[find(i)]){
+        vis[find(i)]=1;
+        sum=(sum+ji[find(i)])%mod;
+    }
+    while(m--){
+        int x,y;
+        cin>>x>>y;
+        long long t=find(x),tmp=ji[t];
+        //cout<<ji[t]/val[x]<<endl;cout<<ji[t]*Pow(val[x],mod-2)%mod<<endl;
+        ji[t]=(ji[t]*Pow(val[x],mod-2)%mod*y)%mod;
+        val[x]=y;
+        sum=(sum-tmp+ji[t]+mod)%mod;
+        cout<<sum<<endl;
+    }
+    return 0;
+}
