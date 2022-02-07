@@ -1,0 +1,27 @@
+#include<bits/stdc++.h>
+using namespace std;
+int n;
+struct node{
+    int f,l,r;
+}t[1010],tt[1010];
+void input(node tmp[]){
+    for(int i=1;i<=n;i++){
+        cin>>tmp[i].l>>tmp[i].r;
+        tmp[tmp[i].l].f=tmp[tmp[i].r].f=i;
+    }
+}
+int main(){
+    cin>>n;
+    input(t);
+    input(tt);
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            if(t[i].f==j&&tt[j].f==i){
+                cout<<1<<'\n'<<j;
+                return 0;
+            }
+        }
+    }
+    cout<<0;
+    return 0;
+}
