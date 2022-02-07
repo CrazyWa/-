@@ -1,0 +1,46 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int N=1e6+100;
+int a[N],dep[N],acc[N][21];
+long long sum[N][2];
+vector<int> t[N];
+int LCA(int u,int v) {
+    if(dep[u]<dep[v])swap(u,v);
+    for(int i=20;i>=0;i--)if(dep[acc[u][i]]>=dep[v])u=acc[u][i];
+    if(u==v)return u;
+    for(int i=20;i>=0;i--)if(acc[u][i]!=acc[v][i])u=acc[u][i],v=acc[v][i];
+    return acc[u][0];
+}
+void dfs(int u,int fa) {
+    acc[u][0]=fa,dep[u]=dep[fa]+1;
+    for(auto v:t[u]) {
+        if(v==fa)continue;
+        sum[v][0]=sum[u][0]+max(0ll,1ll*(a[u]-a[v]));
+        sum[v][1]=sum[u][1]+max(0ll,1ll*(a[v]-a[u]));
+        dfs(v,u);
+    }
+}
+int main() {
+    int n,m;
+    cin>>n>>m;
+    for(int i=1; i<=n; i++)cin>>a[i];
+    for(int i=1; i<n; i++) {
+        int u,v;
+        cin>>u>>v;
+        t[u].push_back(v);
+        t[v].push_back(u);
+    }
+    dfs(1,1);
+    for(int i=1; i<=20; i++) {
+        for(int j=1; j<=n; j++) {
+            acc[j][i]=acc[acc[j][i-1]][i-1];
+        }
+    }
+    for(int i=1; i<=m; i++) {
+        int u,v;
+        cin>>u>>v;
+        int lca=LCA(u,v);
+        cout<<a[u]+sum[u][0]-sum[lca][0]+sum[v][1]-sum[lca][1]<<endl;
+    }
+    return 0;
+}
