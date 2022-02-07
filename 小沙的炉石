@@ -1,0 +1,22 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    long long n,m,T;
+    cin>>n>>m>>T;
+    long long u=min(n,m+1),ans=(u*m+u*(u+1)/2);
+    while(T--){
+        long long x;
+        cin>>x;
+        if(m==1&&n>1&&(x==3||x>5)){
+            cout<<"NO"<<endl;
+            continue;
+        }
+        if(m==2&&x==8){
+            cout<<"NO"<<endl;
+            continue;
+        }
+        if(x<=ans)cout<<"YES"<<endl;
+        else cout<<"NO"<<endl;
+    }
+    return 0;
+}
