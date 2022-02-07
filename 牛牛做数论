@@ -1,0 +1,32 @@
+#include <bits/stdc++.h>
+using namespace std;
+long long prime[20]={0,2,3,5,7,11,13,17,19,23,29,31,37,41};
+bool ispr(long long x){
+    if(x<=3)return true;
+    for(int i=2;i*i<=x;i++){
+        if(x%i==0)return false;
+    }
+    return true;
+}
+int main(){
+    int T;
+    cin>>T;
+    while(T--){
+        long long n;
+        cin>>n;
+        if(n==1){
+            puts("-1");
+            continue;
+        }
+        long long ans=1,t=1;
+        while(ans*prime[t]<=n){
+            ans*=prime[t++];
+        }
+        cout<<ans<<' ';
+        while(!ispr(n)){
+            n--;
+        }
+        cout<<n<<endl;
+    }
+    return 0;
+}
