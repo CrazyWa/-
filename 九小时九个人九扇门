@@ -1,0 +1,30 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int mod=998244353;
+int root(int x){
+	int tmp=0;
+	while(x){
+		tmp+=x%10;
+		x/=10;
+	}
+	if(tmp<10)return tmp;
+	else return root(tmp);
+}
+long long dp[100100][15];
+int main(){
+	int n;
+	cin>>n;
+	for(int i=1;i<=n;i++){
+		int x;
+		cin>>x;
+		for(int j=0;j<10;j++){
+			dp[i][j]=(dp[i][j]+dp[i-1][j])%mod;
+			dp[i][root(j+root(x))]=(dp[i][root(j+root(x))]+dp[i-1][j])%mod;
+		}
+		dp[i][root(x)]=(dp[i][root(x)]+1)%mod;
+		/*for(int j=0;j<10;j++)cout<<dp[i][j]<<' ';
+		cout<<endl;*/
+	}
+	for(int j=1;j<10;j++)cout<<dp[n][j]<<' ';
+	return 0;
+}
