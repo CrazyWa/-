@@ -1,0 +1,61 @@
+#include <bits/stdc++.h>
+using namespace std;
+string d="<>\\/[]{}()";
+string z="\"!'*+-.08:=^_WTYUIOAHXVM|";
+string reverse(string a) {
+    for(int i=0; i<a.size()/2; i++) {
+        swap(a[i],a[a.size()-i-1]);
+    }
+ 
+    return a;
+}
+int main() {
+    int n,m;
+    cin>>n>>m;
+    char ans[10010];
+    ans[n+1]='\0';
+    int i=1,j=n;
+    if(n&1) {
+        int t=1,idx=0,idx2=1;
+        ans[n/2+1]=z[0];
+        for(; i<j; i++,j--) {
+             
+            if(t+2<=m&&idx+2<=d.size())
+                ans[i]=d[idx++],ans[j]=d[idx++],t+=2;
+            else if(t+1<=m&&idx2+1<=z.size())
+                ans[i]=z[idx2],ans[j]=z[idx2++],t++;
+            else if(t==m)
+                ans[i]=ans[j]=z[0];
+            else {
+                cout<<-1;
+                return 0;
+            }
+        }
+        if(t!=m) {
+            cout<<-1;
+            return 0;
+        }
+ 
+    } else {
+        int t=0,idx=0,idx2=0;
+        for(; i<j; i++,j--)
+            if(t+2<=m&&idx+2<=d.size())
+                ans[i]=d[idx++],ans[j]=d[idx++],t+=2;
+            else if(t+1<=m&&idx2+1<=z.size())
+                ans[i]=z[idx2],ans[j]=z[idx2++],t++;
+            else if(idx2&&t==m)
+                ans[i]=ans[j]=z[0];
+            else if(idx&&t==m)
+                ans[i]=d[0],ans[j]=d[1];
+            else {
+                cout<<-1;
+                return 0;
+            }
+        if(t!=m) {
+            cout<<-1;
+            return 0;
+        }
+    }
+    for(int i=1;i<=n;i++)cout<<ans[i];
+    return 0;
+}
