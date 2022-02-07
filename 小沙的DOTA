@@ -1,0 +1,101 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int N=1e5+10;
+const int inf=0x3f3f3f3f;
+char ch[11][4]={"","aaa","aac","aab","bbb","bba","bbc","ccc","cca","ccb","abc"};
+int w[30][30];
+int s[N];
+vector<int>a[N];
+bool check(int i,const char* s){
+    int cnt[3]={0};
+    for(int x=0;x<3;x++,i/=3)cnt[i%3]++,cnt[s[x]-'a']--;
+    for(int x=0;x<3;x++)if(cnt[x])return false;
+    return true;
+}
+void init(){
+    for(int i=0;i<27;i++)for(int j=1;j<=10;j++)if(check(i,ch[j]))a[j].push_back(i);
+    for(int i=0;i<27;i++){
+        for(int j=0;j<27;j++){
+            w[i][j]=3;
+            for(int k=0,c=27;k<3;k++,c/=3){
+                if(i%c==j*c/27){
+                    w[i][j]=k;
+                    break;
+                }
+            }
+        }
+    }
+}
+struct node{
+    int w[6][6];
+    int ls,rs;
+    void init(int c){
+        memset(w,inf,sizeof(w));
+        ls=rs=c;
+        for(int i=0;i<a[c].size();i++)w[i][i]=0;
+    }
+    int money(){
+        int ans=inf;
+        //cout<<ls<<' '<<rs<<endl;
+        for(int i=0;i<a[ls].size();i++){
+            for(int j=0;j<a[rs].size();j++){
+                ans=min(ans,w[i][j]);
+                 
+            }
+        }
+        return ans+3;
+    }
+}t[N<<2];
+int b[6][6];
+void up(node &v,const node&l,const node&r){
+    memset(b,inf,sizeof(b));
+    memset(v.w,inf,sizeof(v.w));
+    for(int i=0;i<a[l.ls].size();i++)for(int j=0;j<a[l.rs].size();j++)for(int k=0;k<a[r.ls].size();k++)
+        b[i][k]=min(b[i][k],l.w[i][j]+w[a[l.rs][j]][a[r.ls][k]]);
+    for(int i=0;i<a[l.ls].size();i++)for(int j=0;j<a[r.ls].size();j++)for(int k=0;k<a[r.rs].size();k++)
+        v.w[i][k]=min(v.w[i][k],b[i][j]+r.w[j][k]);
+     
+    v.ls=l.ls,v.rs=r.rs;
+}
+void build(int p,int l,int r){
+    if(l==r){
+        t[p].init(s[l]);
+        return ;
+    }
+    int mid=(l+r)>>1;
+    build(2*p,l,mid),build(2*p+1,mid+1,r);
+    up(t[p],t[2*p],t[2*p+1]);
+}
+void update(int p,int l,int r,int id,int c){
+    if(l==r){
+        t[p].init(c);
+        return ;
+    }
+    int mid=(l+r)>>1;
+    if(id<=mid)update(2*p,l,mid,id,c);
+    else update(2*p+1,mid+1,r,id,c);
+    up(t[p],t[2*p],t[2*p+1]);
+}
+node query(int p,int l,int r,int L,int R){
+    if(L<=l&&R>=r)return t[p];
+    int mid=(l+r)>>1;
+    if(R<=mid)return query(2*p,l,mid,L,R);
+    else if(L>mid)return query(2*p+1,mid+1,r,L,R);
+    node tmp;
+    up(tmp,query(2*p,l,mid,L,R),query(2*p+1,mid+1,r,L,R));
+     
+    return tmp;
+}
+int main(){
+    int n,m;
+    cin>>n>>m;init();
+    for(int i=1;i<=n;i++)cin>>s[i];
+    build(1,1,n);
+    while(m--){
+        int op,l,r;
+        cin>>op>>l>>r;
+        if(op==1)cout<<query(1,1,n,l,r).money()<<endl;
+        else update(1,1,n,l,r);
+    }
+    return 0;
+}
