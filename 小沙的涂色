@@ -1,0 +1,64 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int N=1e3+7;
+int s[N][N];
+int t[10][10][10];
+void dfs(int l,int r,int idx){
+    int x=r-l+1;
+    if(x<5){
+        for(int i=0;i<x;i++)for(int j=0;j<x;j++)
+            s[l+i][l+j]=t[x][i+1][j+1]+(t[x][i+1][j+1]?idx:0);
+        return ;
+    }
+    else if(x%3==1){
+        for(int k=0;k<=2;k+=2){
+            for(int i=l;i<=r-4;i+=3){
+                s[l+k][i]=s[l+1+k][i]=s[l+k][i+1]=idx++;
+                s[l+1+k][i+1]=s[l+k][i+2]=s[l+1+k][i+2]=idx++;
+                s[r-1-k][i+4]=s[r-k][i+4]=s[r-1-k][i+5]=idx++;
+                s[r-k][i+5]=s[r-1-k][i+6]=s[r-k][i+6]=idx++;
+                s[i+4][l+k]=s[i+4][l+1+k]=s[i+5][l+k]=idx++;
+                s[i+5][l+1+k]=s[i+6][l+k]=s[i+6][l+1+k]=idx++;
+                s[i][r-k]=s[i][r-1-k]=s[i+1][r-k]=idx++;
+                s[i+1][r-1-k]=s[i+2][r-k]=s[i+2][r-1-k]=idx++;
+            }
+        }
+        //cout<<idx<<endl;
+        dfs(l+4,r-4,idx);
+    }
+    else {
+        for(int i=l;i<=r-3;i+=3){
+            s[l][i]=s[l+1][i]=s[l][i+1]=idx++;
+            s[l+1][i+1]=s[l][i+2]=s[l+1][i+2]=idx++;
+            s[r-1][i+2]=s[r][i+2]=s[r-1][i+3]=idx++;
+            s[r][i+3]=s[r-1][i+4]=s[r][i+4]=idx++;
+            s[i+2][l]=s[i+2][l+1]=s[i+3][l]=idx++;
+            s[i+3][l+1]=s[i+4][l]=s[i+4][l+1]=idx++;
+            s[i][r]=s[i][r-1]=s[i+1][r]=idx++;
+            s[i+1][r-1]=s[i+2][r]=s[i+2][r-1]=idx++;
+        }
+        //cout<<idx<<endl;
+        dfs(l+2,r-2,idx);
+    }
+}
+int main(){
+    int n;
+    cin>>n;
+    if(n%3==0){
+        printf("NO");return 0;
+    }
+    cout<<"YES"<<"\n";
+    t[2][1][1]=t[2][1][2]=t[2][2][1]=1;
+    t[4][1][1]=t[4][1][2]=t[4][2][1]=1;
+    t[4][4][4]=t[4][3][4]=t[4][4][3]=2;
+    t[4][1][4]=t[4][1][3]=t[4][2][4]=3;
+    t[4][4][1]=t[4][4][2]=t[4][3][1]=4;
+    t[4][2][2]=t[4][2][3]=t[4][3][2]=5;
+ 
+    dfs(1,n,1);
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++)
+            cout<<s[i][j]<<" ";
+        cout<<"\n";
+    }
+}
