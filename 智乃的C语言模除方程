@@ -1,0 +1,30 @@
+#include <bits/stdc++.h>
+using namespace std;
+long long P;
+long long cal(long long x,long long y){
+    x=min(P-1,x);
+    long long r=(y+1)/P;
+    long long left=(y+1)%P;
+    return (x+1)*r+min(left,x+1)-1;
+}
+long long calc(long long l,long long r,long long L,long long R){
+    return cal(r,R)-cal(l-1,R)-cal(r,L-1)+cal(l-1,L-1);
+}
+int main(){
+    long long l,r,L,R;
+    cin>>P>>l>>r>>L>>R;
+    P=abs(P);
+    long long ans=0;
+    if(l<=0&&r>=0){
+        long long base=(long long)1e10/P*P;
+        ans+=(R+base)/P-(L+base-1)/P;
+    }
+    if(R>0&&r>0){
+        ans+=calc(max(1ll,l),r,max(1ll,L),R);
+    }
+    if(L<0&&l<0){
+        ans+=calc(max(1ll,-r),-l,max(1ll,-R),-L);
+    }
+    cout<<ans;
+    return 0;
+}
