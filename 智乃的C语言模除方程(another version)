@@ -1,0 +1,32 @@
+#include <bits/stdc++.h>
+using namespace std;
+long long P,l,r,L,R;
+long long seg(long long s1,long long t1,long long s2,long long t2){
+    long long s=max(s1,s2),t=min(t1,t2);
+    return max(0ll,t-s+1);
+}
+long long cal(long long A,long long d,long long base,long long len){
+    if(d==0)return l<=A&&A<=r?seg(L,R,base,base+len)+seg(L,R,-base-len,-base):0;
+    long long s=A>r?(A-r+d-1)/d:0,t=A>=l?(A-l)/d:-1;
+    t=min(t,len-1);
+    return seg(L,R,base+s,base+t)+seg(L,R,-base-t,-base-s);
+}
+int main(){
+    cin>>P>>l>>r>>L>>R;
+    if(P<0){
+        P=-P;
+        l=-l;
+        r=-r;
+        swap(l,r);
+    }
+    l=max(l,0ll);
+    long long ans=0;
+    for(long long ll=1,rr;ll<=P;ll=rr+1){
+        rr=P/(P/ll);
+        long long A=P%ll,d=P/ll;
+        ans+=cal(A,d,ll,rr-ll+1);
+    }
+    ans+=cal(P,0,P+1,1e9);
+    cout<<ans;
+    return 0;
+}
