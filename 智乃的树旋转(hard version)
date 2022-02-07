@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+struct node{
+    int f,s[2];
+}t[1010],tt[1010];
+int n;
+int input(node tmp[]){
+    for(int i=1;i<=n;i++){
+        cin>>tmp[i].s[0]>>tmp[i].s[1];
+        tmp[tmp[i].s[0]].f=tmp[tmp[i].s[1]].f=i;
+    }
+    for(int i=1;i<=n;i++)if(tmp[i].f==0)return i;
+    return -1;
+}
+int vis[1010];
+vector<int>ans;
+void rot(int u){
+    int fa=tt[u].f,gfa=tt[fa].f;
+    int t1=(u!=tt[fa].s[0]),t2=(fa!=tt[gfa].s[0]),son=tt[u].s[1^t1];
+    tt[u].f=gfa;
+    tt[u].s[1^t1]=fa;
+    tt[fa].s[0^t1]=son;
+    tt[fa].f=u;
+    tt[son].f=fa;
+    tt[gfa].s[0^t2]=u;
+}
+void splay(int u){
+    while(!vis[tt[u].f]){
+        rot(u);
+        ans.push_back(u);
+    }
+}
+void dfs(int u){
+    splay(u);
+    vis[u]=1;
+    if(t[u].s[0])dfs(t[u].s[0]);
+    if(t[u].s[1])dfs(t[u].s[1]);
+}
+int main(){
+    vis[0]=1;
+    cin>>n;
+    int root=input(t);
+    input(tt);
+    dfs(root);
+    cout<<ans.size()<<endl;
+    for(auto u:ans)cout<<u<<endl;
+    return 0;
+}
