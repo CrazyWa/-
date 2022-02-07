@@ -1,0 +1,37 @@
+#include <bits/stdc++.h>
+using namespace std;
+const int N=100100;
+int A,B,C,D;
+int n,L,R;
+string s;
+bool judge() {
+    return (A>0)+(B>0)+(C>0)+(D>0)>=3;
+}
+void add(char c) {
+    if(c>='A'&&c<='Z')A++;
+    else if(c>='a'&&c<='z')B++;
+    else if(c>='0'&&c<='9')C++;
+    else D++;
+}
+void des(char c) {
+    if(c>='A'&&c<='Z')A--;
+    else if(c>='a'&&c<='z')B--;
+    else if(c>='0'&&c<='9')C--;
+    else D--;
+}
+int main() {
+ 
+    cin>>n>>L>>R;
+    cin>>s;
+    int l=0,r=-1;
+    long long ans=0;
+    while(l<n-L+1&&r<n) {
+        while(!judge()&&r<n)add(s[++r]);
+        if(r<=l+L-1)ans+=min(R+l-1,n-1)-l-L+2;
+        else if(r<=l+R-1)ans+=min(R+l-1,n-1)-r+1;
+        //cout<<l<<' '<<r<<endl;
+        des(s[l++]);
+    }
+    cout<<ans;
+    return 0;
+}
