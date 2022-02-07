@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+using namespace std;
+int dp[200100][3][3][3];
+int main() {
+    int n;
+    string s;
+    cin>>n;
+    cin>>s;
+    s='0'+s;
+    memset(dp,-1,sizeof(dp));
+    for(int i=0; i<3; i++) {
+        for(int j=0; j<3; j++) {
+            for(int k=0; k<3; k++) {
+                int x1=(i==1)+(j==1)+(k==1);
+                int x2=(i==2)+(j==2)+(k==2);
+                int x3=(i==0)+(j==0)+(k==0);
+                if(s[3]=='G'&&(x1>x2))dp[3][i][j][k]=x1;
+                if(s[3]=='R'&&(x2>x1))dp[3][i][j][k]=x1;
+                if(s[3]=='B'&&(x1==x2))dp[3][i][j][k]=x1;
+                //cout<<dp[2][i][j][k]<<endl;
+            }
+        }
+    }
+    int ans=-1;
+    for(int p=4; p<=n; p++)
+        for(int i=0; i<3; i++)
+            for(int j=0; j<3; j++)
+                for(int k=0; k<3; k++)
+                    for(int r=0; r<3; r++) {
+                        if(dp[p-1][r][i][j]==-1)continue;
+                        int x1=(i==1)+(j==1)+(k==1);
+                        int x2=(i==2)+(j==2)+(k==2);
+                        if(x1>=x2&&s[p]=='R')continue;
+                        if(x1<=x2&&s[p]=='G')continue;
+                        if(x1!=x2&&s[p]=='B')continue;
+                        dp[p][i][j][k]=max(dp[p][i][j][k],dp[p-1][r][i][j]+(k==1));
+                        //cout<<dp[p][i][j][k]<<endl;
+                    }
+    for(int i=0;i<3;i++)
+        for(int j=0;j<3;j++)
+            for(int k=0;k<3;k++)
+                ans=max(ans,dp[n][i][j][k]);
+    cout<<ans;
+    return 0;
+}
